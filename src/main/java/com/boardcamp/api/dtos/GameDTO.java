@@ -2,6 +2,7 @@ package com.boardcamp.api.dtos;
 
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,8 +16,10 @@ public class GameDTO {
     private String image;
 
     @NotNull
+    @Min(value = 1)
     private int stockTotal;
 
     @NotNull
-    private int pricePerDay ;
+    @Min(value = 1)
+    private int pricePerDay;
 }
