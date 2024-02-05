@@ -7,12 +7,12 @@ import lombok.Data;
 @Data
 public class CustomerDTO {
     
-    @NotBlank(message = "Title is mandatory")
+    @NotBlank(message = "Name is mandatory")
     @Size(max = 100)
     private String name;
 
-    @NotBlank
-    @Size(max = 11)
+    @NotBlank(message = "Cpf is mandatory")
+    @Size(min = 11, max = 11)
     private String cpf;
 
 }
