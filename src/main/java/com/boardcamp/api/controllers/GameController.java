@@ -1,7 +1,6 @@
 package com.boardcamp.api.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,12 +32,11 @@ public class GameController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createGame(@RequestBody @Valid GameDTO body) {
-        Optional<GameModel> game = gameService.save(body);
-
-        if (!game.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("A game with this name already exists");
-        }
+    public ResponseEntity<GameModel> createGame(@RequestBody @Valid GameDTO body) {
+        
+        
+        GameModel game = gameService.save(body);
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(game);
     }
 }

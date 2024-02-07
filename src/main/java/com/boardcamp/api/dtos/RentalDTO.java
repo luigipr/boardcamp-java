@@ -9,6 +9,14 @@ import lombok.Data;
 @Data
 public class RentalDTO {
     
+    public RentalDTO(LocalDate rentDate, int originalPrice, int delayFee, int daysRented) {
+        this.rentDate = rentDate;
+        this.delayFee = delayFee;
+        this.returnDate = null;
+        this.originalPrice = originalPrice;
+        this.daysRented = daysRented;
+    }
+
     @NotNull
     private long customerId;
 
