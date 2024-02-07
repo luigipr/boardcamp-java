@@ -36,9 +36,8 @@ public class RentalController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createRental(@RequestBody @Valid RentalDTO body) {
-        Optional<RentalModel> rental = rentalService.save(body);
-
+    public ResponseEntity<RentalModel> createRental(@RequestBody @Valid RentalDTO body) {
+        RentalModel rental = rentalService.save(body);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(rental);
     }
@@ -46,7 +45,8 @@ public class RentalController {
 
     @PutMapping("/{id}/return")
     public ResponseEntity<RentalModel> updateRental(@PathVariable Long id, @RequestBody RentalDTO body) {
-        RentalModel rental = rentalService.update(body, id);
+        RentalModel rental = rentalService.update(id);
+
         return ResponseEntity.status(HttpStatus.OK).body(rental);
     }
 }

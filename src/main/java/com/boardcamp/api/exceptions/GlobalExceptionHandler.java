@@ -25,4 +25,10 @@ public class GlobalExceptionHandler {
         public ResponseEntity<String> handleBadRequest(BadRequestException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
         }
+
+        //Unprocessable Entity
+        @ExceptionHandler({ UnprocessableEntityException.class })
+        public ResponseEntity<String> handleUnprocessableEntity(UnprocessableEntityException exception) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        }
 }

@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.boardcamp.api.dtos.RentalDTO;
 import com.boardcamp.api.exceptions.BadRequestException;
 import com.boardcamp.api.exceptions.NotFoundException;
+import com.boardcamp.api.exceptions.UnprocessableEntityException;
 import com.boardcamp.api.models.CustomerModel;
 import com.boardcamp.api.models.GameModel;
 import com.boardcamp.api.models.RentalModel;
@@ -31,7 +32,7 @@ public class RentalService {
         return rentalRepository.findAll();
     }
 
-    public Optional<RentalModel> save(RentalDTO dto) {
+    public RentalModel save(RentalDTO dto) {
 
         int daysRented = dto.getDaysRented();
         if(daysRented <= 0) {
@@ -49,7 +50,7 @@ public class RentalService {
 
         int stock = game.get().getStockTotal();
         if (stock <= 0) {
-            throw new RecipeTitleConflictException("This recipe already exists!"); 
+            throw new UnprocessableEntityException("There is no more games to rent!"); 
         }
 
         LocalDate rentDate = LocalDate.now();
@@ -61,14 +62,18 @@ public class RentalService {
         RentalDTO dto2 = new RentalDTO(rentDate, originalPrice, delayFee, daysRented);
 
         RentalModel rental = new RentalModel(dto2, customer.get(), game.get());
-        return Optional.of(rentalRepository.save(rental));
+        return rentalRepository.save(rental);
     }
 
-    public Optional<RentalModel> update(RentalDTO dto, Long id) {
+    public RentalModel update(Long id) {
 
         Optional<RentalModel> rental = rentalRepository.findById(id);
         if (!rental.isPresent()) {
-            return Optional.empty();
+            throw new NotFoundException("There is no rental with this id!");
+        }
+
+        if(rental.get().getReturnDate() != null) {
+            throw new UnprocessableEntityException("This game was already returned!"); 
         }
 
         LocalDate rentDate = rental.get().getRentDate();
@@ -84,6 +89,7 @@ public class RentalService {
         rental.get().setReturnDate(returnDate);
         rental.get().setDelayFee(delayFee);
         
-        return Optional.of(rentalRepository.save(rental));
+
+        return rentalRepository.save(rental.get());
     } 
 }
