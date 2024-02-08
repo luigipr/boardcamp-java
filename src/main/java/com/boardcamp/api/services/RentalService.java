@@ -5,6 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import com.boardcamp.api.dtos.RentalDTO;
 import com.boardcamp.api.exceptions.BadRequestException;
 import com.boardcamp.api.exceptions.NotFoundException;
@@ -16,6 +18,7 @@ import com.boardcamp.api.repositories.CustomerRepository;
 import com.boardcamp.api.repositories.GameRepository;
 import com.boardcamp.api.repositories.RentalRepository;
 
+@Service
 public class RentalService {
     
     final RentalRepository rentalRepository;
@@ -39,29 +42,24 @@ public class RentalService {
             throw new BadRequestException("You can't rent a game for none or less than one day!");
         }
 
-        Optional<CustomerModel> customer = customerRepository.findById(dto.getCustomerId());
-        if (!customer.isPresent()) {
-            throw new NotFoundException("There is no customer with this id!");
-        }
-        Optional<GameModel> game = gameRepository.findById(dto.getGameId());
-        if (!game.isPresent()) {
-            throw new NotFoundException("There is no game with this id!");
-        }
+        CustomerModel customer = customerRepository.findById(dto.getCustomerId()).orElseThrow(
+                () -> new NotFoundException("There is no customer with this id!"));
 
-        int stock = game.get().getStockTotal();
+        GameModel game = gameRepository.findById(dto.getGameId()).orElseThrow(
+                () -> new NotFoundException("There is no game with this id!"));
+
+        int stock = game.getStockTotal();
         if (stock <= 0) {
             throw new UnprocessableEntityException("There is no more games to rent!"); 
         }
 
         LocalDate rentDate = LocalDate.now();
 
-        int originalPrice = dto.getDaysRented() * game.get().getPricePerDay();
+        int originalPrice = dto.getDaysRented() * game.getPricePerDay();
 
         int delayFee = 0;
 
-        RentalDTO dto2 = new RentalDTO(rentDate, originalPrice, delayFee, daysRented);
-
-        RentalModel rental = new RentalModel(dto2, customer.get(), game.get());
+        RentalModel rental = new RentalModel(rentDate, originalPrice, delayFee, daysRented, customer, game);
         return rentalRepository.save(rental);
     }
 

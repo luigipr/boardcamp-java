@@ -2,8 +2,6 @@ package com.boardcamp.api.models;
 
 import java.time.LocalDate;
 
-import com.boardcamp.api.dtos.RentalDTO;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,28 +22,18 @@ import lombok.NoArgsConstructor;
 @Table(name = "rentals")  // Nome da tabela que representa esses dados
 public class RentalModel {
     
-    public RentalModel(RentalDTO dto, CustomerModel customer, GameModel game){  
+    public RentalModel(LocalDate rentDate, int originalPrice, int delayFee, int daysRented, CustomerModel customer, GameModel game){  
         this.customer = customer;
         this.game = game;
-        this.rentDate = dto.getRentDate();
-        this.daysRented = dto.getDaysRented();
-        this.returnDate = dto.getReturnDate();
-        this.originalPrice = dto.getOriginalPrice();
-        this.delayFee = dto.getDelayFee();
+        this.rentDate = rentDate;
+        this.daysRented = daysRented;
+        this.originalPrice = originalPrice;
+        this.delayFee = delayFee;
     }
-    
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
-    @ManyToOne 
-    @JoinColumn(name = "customerId")
-    private CustomerModel customer;
-
-    @ManyToOne 
-    @JoinColumn(name = "gameId")
-    private GameModel game;
 
     @Column(nullable = false)
     private LocalDate rentDate;
@@ -61,5 +49,15 @@ public class RentalModel {
 
     @Column
     private int delayFee;
+
+    @ManyToOne 
+    @JoinColumn(name = "customerId")
+    private CustomerModel customer;
+
+    @ManyToOne 
+    @JoinColumn(name = "gameId")
+    private GameModel game;
+
+
 
 }

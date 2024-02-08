@@ -1,7 +1,6 @@
 package com.boardcamp.api.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +43,7 @@ public class RentalController {
 
 
     @PutMapping("/{id}/return")
-    public ResponseEntity<RentalModel> updateRental(@PathVariable Long id, @RequestBody RentalDTO body) {
+    public ResponseEntity<RentalModel> updateRental(@PathVariable Long id) {
         RentalModel rental = rentalService.update(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(rental);
